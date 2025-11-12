@@ -1,0 +1,218 @@
+{
+  "id": null,
+  "uid": "shoehub-sales",
+  "title": "Shoe Sales - Lab",
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Loafers m\u00fc\u00fck (rate)",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 6
+      },
+      "id": 1,
+      "targets": [
+        {
+          "expr": "rate(shoehub_sales{ShoeType=\"Loafers\"}[1m])",
+          "refId": "A",
+          "legendFormat": "Loafers"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Boots m\u00fc\u00fck (rate)",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 6
+      },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "rate(shoehub_sales{ShoeType=\"Boots\"}[1m])",
+          "refId": "A",
+          "legendFormat": "Boots"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "High Heels m\u00fc\u00fck (rate)",
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 6
+      },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "rate(shoehub_sales{ShoeType=\"HighHeels\"}[1m])",
+          "refId": "A",
+          "legendFormat": "HighHeels"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Kokku m\u00fc\u00fck (sum rate)",
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 12,
+        "h": 6
+      },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "sum(rate(shoehub_sales[1m]))",
+          "refId": "A",
+          "legendFormat": "Total"
+        }
+      ]
+    },
+    {
+      "type": "gauge",
+      "title": "PayPal % USAs",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "id": 5,
+      "targets": [
+        {
+          "expr": "sum(shoehub_payments{CountryCode=\"US\",PaymentMethod=\"Paypal\"}) / sum(shoehub_payments{CountryCode=\"US\"}) * 100",
+          "refId": "A",
+          "format": "percent"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "fieldOptions": {
+          "defaults": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "type": "gauge",
+      "title": "PayPal % Australias",
+      "gridPos": {
+        "x": 8,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "id": 6,
+      "targets": [
+        {
+          "expr": "sum(shoehub_payments{CountryCode=\"AU\",PaymentMethod=\"Paypal\"}) / sum(shoehub_payments{CountryCode=\"AU\"}) * 100",
+          "refId": "A",
+          "format": "percent"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "fieldOptions": {
+          "defaults": {
+            "min": 0,
+            "max": 100
+          }
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "type": "grafana-piechart-panel",
+      "title": "Shoe types distribution",
+      "gridPos": {
+        "x": 16,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "id": 7,
+      "targets": [
+        {
+          "expr": "sum(shoehub_sales{ShoeType=\"Loafers\"})",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(shoehub_sales{ShoeType=\"Boots\"})",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(shoehub_sales{ShoeType=\"HighHeels\"})",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Loafers: T\u00e4na vs 7 p\u00e4eva tagasi",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 24,
+        "h": 8
+      },
+      "id": 8,
+      "targets": [
+        {
+          "expr": "rate(shoehub_sales{ShoeType=\"Loafers\"}[1m])",
+          "refId": "A",
+          "legendFormat": "T\u00e4na"
+        },
+        {
+          "expr": "rate(shoehub_sales{ShoeType=\"Loafers\"}[1m] offset 7d)",
+          "refId": "B",
+          "legendFormat": "7d tagasi"
+        }
+      ]
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "country",
+        "label": "Riik",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(shoehub_payments, CountryCode)",
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "annotations": {
+    "list": []
+  }
+}
